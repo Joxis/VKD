@@ -41,10 +41,10 @@ class Visualizer:
             # query_images = self.get_images(query_id)
             # self.save_query_images(out_pid_dir, query_images)
 
+            print("==== {}_{}".format(query_camera_id, query_id))
             for min_idx in min_k:
                 distance = distances[min_idx]
                 gallery_id = self.g_pids[min_idx]
                 gallery_camera_id = self.g_camids[min_idx]
-                print("{}.{} ---{}--- {}.{}".format(query_camera_id, query_id,
-                                                    distance, gallery_camera_id,
-                                                    gallery_id))
+                print("\t{}_{} ({:.2f})".format(gallery_camera_id, gallery_id,
+                                                distance))
