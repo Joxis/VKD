@@ -27,7 +27,7 @@ class Visualizer:
         num_query, num_gallery = dist_mat.shape
         for i in range(num_query):
             # Get the k closest identities
-            distances = [dist_mat[i, j] for j in range(num_gallery)]
+            distances = np.array([dist_mat[i, j] for j in range(num_gallery)])
             idx = np.argpartition(distances, self.k)[:self.k]
             print(type(idx))
             print(distances[idx])
