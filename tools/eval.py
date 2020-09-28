@@ -33,11 +33,15 @@ class Evaluator:
         self.galleryimg_loader = galleryimg_loader
 
         # ----------- QUERY
+        print("Extracting query video features...")
         vid_qf, self.vid_q_pids, self.vid_q_camids = self.extract_features(model, query_loader,
                                                                            device)
+        print("Extracting query image features...")
         img_qf, self.img_q_pids, self.img_q_camids = self.extract_features(model, queryimg_loader,
                                                                            device)
+
         # ----------- GALLERY
+        print("Extracting gallery features...")
         if self.perform_x2v:
             vid_gf, self.vid_g_pids, self.vid_g_camids = self.extract_features(model,
                                                                                gallery_loader,
