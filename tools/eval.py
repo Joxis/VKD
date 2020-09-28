@@ -5,6 +5,7 @@ from typing import Tuple
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 from data.datasets import get_dataloaders
 from data.eval_metrics import evaluate
@@ -124,7 +125,7 @@ class Evaluator:
         """
         features, pids, cams = [], [], []
 
-        for vids, pidids, camids in loader:
+        for vids, pidids, camids in tqdm(loader):
             vids = vids.to(device)
 
             feat = model(vids)
@@ -206,7 +207,9 @@ def main():
     assert num_pids == old_hparams['num_classes']
 
     net = get_model(args, num_pids).to(device)
-    state_dict = torch.load(Path(args.trinet_folder) / 'chk' / args.trinet_chk_name)
+    state_dict = torch.load(
+        Path(args.trinet_folder) / 'chk' / args.trinet_chk_name,
+        map_location=torch.device('cpu'))
     net.load_state_dict(state_dict)
 
     e = Evaluator(net, query_loader, gallery_loader, queryimg_loader, galleryimg_loader,

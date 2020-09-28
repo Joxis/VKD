@@ -83,7 +83,7 @@ class DukeVideoreID(object):
         displaces = np.concatenate([[0], displaces, [len(hs)]])
         for idx in range(len(displaces) - 1):
             names = train_names[displaces[idx]: displaces[idx + 1]]
-            pid, camera = map(int, names[0].replace('C', '').split('_')[:2])
+            pid, camera = map(int, names[0].replace('c', '').split('_')[:2])
             camera -= 1
             paths = [str(p) for p in train_paths[displaces[idx]: displaces[idx + 1]]]
             train.append((paths, pid, camera))
