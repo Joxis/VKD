@@ -13,6 +13,7 @@ from model.net import get_model
 from utils.conf import Conf
 from utils.saver import Saver
 from data.datasets import DataConf, DATA_CONFS
+from tools.visualizer import Visualizer
 
 
 class Evaluator:
@@ -216,6 +217,10 @@ def main():
                   device=device, data_conf=DATA_CONFS[args.dataset_name])
 
     e.eval(None, 0, verbose=True, do_tb=False)
+
+    visualizer = Visualizer(e.vid_g_pids, e.vid_g_camids,
+                            e.vid_q_pids, e.vid_q_camids)
+    visualizer.run(e.v2v_distmat)
 
 
 if __name__ == '__main__':
