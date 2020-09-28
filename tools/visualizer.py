@@ -29,7 +29,7 @@ class Visualizer:
             # Get the k closest identities
             distances = [dist_mat[i, j] for j in range(num_gallery)]
             idx = np.argpartition(distances, self.k)[:self.k]
-            print(idx)
+            print(type(idx))
             print(distances[idx])
             print(np.argsort(distances[idx]))
             min_k = idx[np.argsort(distances[idx])]
