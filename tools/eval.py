@@ -208,8 +208,7 @@ def main():
 
     net = get_model(args, num_pids).to(device)
     state_dict = torch.load(
-        Path(args.trinet_folder) / 'chk' / args.trinet_chk_name,
-        map_location=torch.device('cpu'))
+        Path(args.trinet_folder) / 'chk' / args.trinet_chk_name)
     net.load_state_dict(state_dict)
 
     e = Evaluator(net, query_loader, gallery_loader, queryimg_loader, galleryimg_loader,
