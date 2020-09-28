@@ -198,7 +198,7 @@ def main():
     saver_trinet = Saver(Path(args.trinet_folder).parent, Path(args.trinet_folder).name)
     old_params, old_hparams = saver_trinet.load_logs()
     args.backbone = old_params['backbone']
-    args.metric = old_params['metric']
+    # args.metric = old_params['metric']
 
     train_loader, query_loader, gallery_loader, queryimg_loader, galleryimg_loader = \
         get_dataloaders(args.dataset_name, conf.nas_path, device, args)
