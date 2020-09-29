@@ -5,6 +5,7 @@ import errno
 
 import numpy as np
 import cv2 as cv
+from tqdm import tqdm
 
 GRID_SPACING = 10
 QUERY_EXTRA_SPACING = 90
@@ -205,7 +206,8 @@ class Visualizer:
         # print(self.q_pids[0], self.q_camids[0])
         # print(self.g_pids[0], self.g_camids[0])
 
-        for i in range(num_query[:num]):
+        print("Saving images...")
+        for i in tqdm(range(num_query[:num])):
             # Get the k closest identities
             distances = np.array([dist_mat[i, j] for j in range(num_gallery)])
             idx = np.argpartition(distances, self.k)[:self.k]
