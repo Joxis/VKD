@@ -203,11 +203,9 @@ class Visualizer:
               len(self.g_dataset), num_gallery)
         print(self.q_dataset[0][0].shape, self.q_dataset[0][1:])
         print(self.g_dataset[0][0].shape, self.g_dataset[0][1:])
-        # print(self.q_pids[0], self.q_camids[0])
-        # print(self.g_pids[0], self.g_camids[0])
 
         print("Saving images...")
-        for i in tqdm(range(num_query[:num])):
+        for i in tqdm(range(min(num_query, num))):
             # Get the k closest identities
             distances = np.array([dist_mat[i, j] for j in range(num_gallery)])
             idx = np.argpartition(distances, self.k)[:self.k]
