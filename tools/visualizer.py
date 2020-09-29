@@ -207,8 +207,9 @@ class Visualizer:
     def run(self, dist_mat, num=100):
         num_query, num_gallery = dist_mat.shape
 
-        # print(len(self.q_dataset), num_query,
-        #       len(self.g_dataset), num_gallery)
+        print(len(self.q_dataset.dataset), num_query,
+              len(self.g_dataset.dataset), num_gallery)
+        print(self.q_dataset.dataset[0])
         # print(self.q_dataset[0][0].shape, self.q_dataset[0][1:])
         # print(self.g_dataset[0][0].shape, self.g_dataset[0][1:])
 
