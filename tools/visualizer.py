@@ -212,8 +212,10 @@ class Visualizer:
             min_k = idx[np.argsort(distances[idx])]
 
             # Create a directory to store the images of the top k matches
-            query_pid = self.q_dataset[i][1]
-            out_pid_dir = os.path.join(self.out_dir, str(query_pid).zfill(6))
+            query_pid, query_cam_id = self.q_dataset[i][1:]
+            out_pid_dir = os.path.join(
+                self.out_dir, "{}_c{}".format(str(query_pid).zfill(6),
+                                              str(query_cam_id).zfill(2)))
             if not os.path.isdir(out_pid_dir):
                 os.makedirs(out_pid_dir)
 
