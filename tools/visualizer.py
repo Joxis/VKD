@@ -189,6 +189,8 @@ class Visualizer:
 
         print(len(self.q_dataset), num_query,
               len(self.g_dataset), num_gallery)
+        print(self.q_dataset[0])
+        print(self.g_dataset[0])
 
         for i in range(num_query):
             # Get the k closest identities
@@ -206,10 +208,10 @@ class Visualizer:
             # query_images = self.get_images(query_id)
             # self.save_query_images(out_pid_dir, query_images)
 
-            print("==== c{}_{}".format(query_camera_id, query_id))
-            for min_idx in min_k:
-                distance = distances[min_idx]
-                gallery_id = self.g_pids[min_idx]
-                gallery_camera_id = self.g_camids[min_idx]
-                print("\tc{}_{} ({:.2f})".format(gallery_camera_id, gallery_id,
-                                                 distance))
+            # print("==== c{}_{}".format(query_camera_id, query_id))
+            # for min_idx in min_k:
+            #     distance = distances[min_idx]
+            #     gallery_id = self.g_pids[min_idx]
+            #     gallery_camera_id = self.g_camids[min_idx]
+            #     print("\tc{}_{} ({:.2f})".format(gallery_camera_id, gallery_id,
+            #                                      distance))
