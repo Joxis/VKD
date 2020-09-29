@@ -6,6 +6,7 @@ import errno
 import numpy as np
 import cv2 as cv
 from tqdm import tqdm
+from torchvision.utils import save_image
 
 GRID_SPACING = 10
 QUERY_EXTRA_SPACING = 90
@@ -181,9 +182,10 @@ class Visualizer:
 
     @staticmethod
     def save_image(image, image_path):
-        image = image.numpy().transpose((1, 2, 0)) * 255
-        image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
-        cv.imwrite(image_path, image)
+        # image = image.numpy().transpose((1, 2, 0)) * 255
+        # image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
+        # cv.imwrite(image_path, image)
+        save_image(image, image_path)
 
     @staticmethod
     def save_query_images(images_dir, image_tuple):
