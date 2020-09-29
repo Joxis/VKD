@@ -170,7 +170,7 @@ class Visualizer:
         self.g_camids = g_camids
         self.q_pids = q_pids
         self.q_camids = q_camids
-        self.g_dataset= g_dataset
+        self.g_dataset = g_dataset
         self.q_dataset = q_dataset
         self.out_dir = out_dir
         self.k = k
