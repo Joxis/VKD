@@ -189,8 +189,10 @@ class Visualizer:
 
         print(len(self.q_dataset), num_query,
               len(self.g_dataset), num_gallery)
-        print(self.q_dataset[0][0].shape)
-        print(self.g_dataset[0][0].shape)
+        print(self.q_dataset[0][0].shape, self.q_dataset[0][1:])
+        print(self.g_dataset[0][0].shape, self.g_dataset[0][1:])
+        print(self.q_pids[0], self.q_camids[0])
+        print(self.g_pids[0], self.g_camids[0])
 
         for i in range(num_query):
             # Get the k closest identities
