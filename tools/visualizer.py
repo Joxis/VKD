@@ -179,14 +179,12 @@ class Visualizer:
             os.makedirs(self.out_dir)
 
     @staticmethod
-    def save_query_images(images_dir, image_tuples):
-        print(len(image_tuples))
-        for images, p_id, cam_id in image_tuples:
-            for i, image in enumerate(images):
-                image_path = os.path.join(images_dir,
-                                          "q-{}_c{}-{}.jpg".format(p_id, cam_id,
-                                                                   i))
-                cv.imwrite(image_path, image)
+    def save_query_images(images_dir, image_tuple):
+        images, p_id, cam_id = image_tuple
+        for i, image in enumerate(images):
+            image_path = os.path.join(images_dir,
+                                      "q-{}_c{}-{}.jpg".format(p_id, cam_id, i))
+            cv.imwrite(image_path, image)
 
     @staticmethod
     def save_gallery_images(images_dir, image_tuples, distances):
