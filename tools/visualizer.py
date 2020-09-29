@@ -166,23 +166,33 @@ class Visualizer:
 
     def __init__(self, g_pids, g_camids, q_pids, q_camids, g_dataset, q_dataset,
                  out_dir='output/', k=10):
-        self.g_pids = g_pids
-        self.g_camids = g_camids
-        self.q_pids = q_pids
-        self.q_camids = q_camids
+        # self.g_pids = g_pids
+        # self.g_camids = g_camids
+        # self.q_pids = q_pids
+        # self.q_camids = q_camids
         self.g_dataset = g_dataset
         self.q_dataset = q_dataset
         self.out_dir = out_dir
         self.k = k
 
-    def get_images(self, pid):
-        # TODO
-        return []
+        if not os.path.isdir(self.out_dir):
+            os.makedirs(self.out_dir)
 
     @staticmethod
-    def save_query_images(images_dir, images):
-        for i, image in enumerate(images):
-            cv.imwrite(os.path.join(images_dir, "query{}.jpg".format(i)), image)
+    def save_query_images(images_dir, image_tuples):
+        for i, (image, p_id, cam_id) in enumerate(image_tuples):
+            image_path = os.path.join(images_dir,
+                                      "q-{}_c{}-{}.jpg".format(p_id, cam_id, i))
+            cv.imwrite(image_path, image)
+
+    @staticmethod
+    def save_gallery_images(images_dir, image_tuples, distances):
+        for i, (images, p_id, cam_id) in enumerate(image_tuples):
+            image_path = os.path.join(images_dir,
+                                      "g-{}_c{}-{:.2f}.jpg".format(p_id, cam_id,
+                                                                   distances[
+                                                                       i]))
+            cv.imwrite(image_path, images[0])
 
     def run(self, dist_mat):
         num_query, num_gallery = dist_mat.shape
@@ -191,8 +201,8 @@ class Visualizer:
               len(self.g_dataset), num_gallery)
         print(self.q_dataset[0][0].shape, self.q_dataset[0][1:])
         print(self.g_dataset[0][0].shape, self.g_dataset[0][1:])
-        print(self.q_pids[0], self.q_camids[0])
-        print(self.g_pids[0], self.g_camids[0])
+        # print(self.q_pids[0], self.q_camids[0])
+        # print(self.g_pids[0], self.g_camids[0])
 
         for i in range(num_query):
             # Get the k closest identities
@@ -201,19 +211,16 @@ class Visualizer:
             min_k = idx[np.argsort(distances[idx])]
 
             # Create a directory to store the images of the top k matches
-            query_id = self.q_pids[i]
-            query_camera_id = self.q_camids[i]
-            out_pid_dir = os.path.join(self.out_dir, str(query_id).zfill(8))
+            out_pid_dir = os.path.join(self.out_dir, )
             if not os.path.isdir(out_pid_dir):
                 os.makedirs(out_pid_dir)
 
-            # query_images = self.get_images(query_id)
-            # self.save_query_images(out_pid_dir, query_images)
+            result_image_tuples = []
+            result_distances = []
+            for min_idx in min_k:
+                result_distances.append(distances[min_idx])
+                result_image_tuples.append(self.g_dataset[min_idx])
 
-            # print("==== c{}_{}".format(query_camera_id, query_id))
-            # for min_idx in min_k:
-            #     distance = distances[min_idx]
-            #     gallery_id = self.g_pids[min_idx]
-            #     gallery_camera_id = self.g_camids[min_idx]
-            #     print("\tc{}_{} ({:.2f})".format(gallery_camera_id, gallery_id,
-            #                                      distance))
+            self.save_query_images(out_pid_dir, self.q_dataset[i])
+            self.save_gallery_images(out_pid_dir, result_image_tuples,
+                                     result_distances)
