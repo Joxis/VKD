@@ -183,17 +183,17 @@ class Visualizer:
         images, p_id, cam_id = image_tuple
         for i, image in enumerate(images):
             image_path = os.path.join(images_dir,
-                                      "q-{}_c{}-{}.jpg".format(p_id, cam_id, i))
-            cv.imwrite(image_path, image.numpy().transpose((1, 2, 0)) * 255)
+                                      "q-{}-{}_c{}.jpg".format(i, p_id, cam_id))
+            cv.imwrite(image_path, image.numpy().transpose((2, 1, 0)) * 255)
 
     @staticmethod
     def save_gallery_images(images_dir, image_tuples, distances):
         for i, (images, p_id, cam_id) in enumerate(image_tuples):
             image_path = os.path.join(images_dir,
-                                      "g-{}_c{}-{:.2f}.jpg".format(p_id, cam_id,
-                                                                   distances[
-                                                                       i]))
-            cv.imwrite(image_path, images[0].numpy().transpose((1, 2, 0)) * 255)
+                                      "g-{:.2f}-{}_c{}.jpg".format(distances[i],
+                                                                   p_id, cam_id,
+                                                                   ))
+            cv.imwrite(image_path, images[0].numpy().transpose((2, 1, 0)) * 255)
 
     def run(self, dist_mat):
         num_query, num_gallery = dist_mat.shape
@@ -213,7 +213,7 @@ class Visualizer:
 
             # Create a directory to store the images of the top k matches
             query_pid = self.q_dataset[i][1]
-            out_pid_dir = os.path.join(self.out_dir, str(query_pid).zfill(8))
+            out_pid_dir = os.path.join(self.out_dir, str(query_pid).zfill(6))
             if not os.path.isdir(out_pid_dir):
                 os.makedirs(out_pid_dir)
 
