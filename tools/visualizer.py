@@ -6,7 +6,6 @@ import errno
 import numpy as np
 import cv2 as cv
 from tqdm import tqdm
-from torchvision.utils import save_image
 
 GRID_SPACING = 10
 QUERY_EXTRA_SPACING = 90
@@ -184,32 +183,39 @@ class Visualizer:
     def save_image(image, image_path):
         # image = image.numpy().transpose((1, 2, 0)) * 255
         # image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
-        # cv.imwrite(image_path, image)
-        save_image(image, image_path)
+        cv.imwrite(image_path, image)
+        # save_image(image, image_path)
+
+    @staticmethod
+    def get_image(image_path):
+        return cv.imread(image_path)
 
     @staticmethod
     def save_query_images(images_dir, image_tuple):
         images, p_id, cam_id = image_tuple
-        for i, image in enumerate(images):
-            image_path = os.path.join(
+        for i, image_path in enumerate(images):
+            image = Visualizer.get_image(image_path)
+            out_image_path = os.path.join(
                 images_dir, "q-{}-{}_c{}.jpg".format(str(i).zfill(2), p_id,
                                                      str(cam_id).zfill(2)))
-            Visualizer.save_image(image, image_path)
+            Visualizer.save_image(image, out_image_path)
 
     @staticmethod
     def save_gallery_images(images_dir, image_tuples, distances):
-        for i, (images, p_id, cam_id) in enumerate(image_tuples):
-            image_path = os.path.join(
+        for i, (image_paths, p_id, cam_id) in enumerate(image_tuples):
+            out_image_path = os.path.join(
                 images_dir, "g-{:.2f}-{}_c{}.jpg".format(distances[i], p_id,
                                                          str(cam_id).zfill(2)))
-            Visualizer.save_image(images[0], image_path)
+
+            image = Visualizer.get_image(image_paths[0])
+            Visualizer.save_image(image, out_image_path)
 
     def run(self, dist_mat, num=100):
         num_query, num_gallery = dist_mat.shape
 
-        print(len(self.q_dataset.dataset), num_query,
-              len(self.g_dataset.dataset), num_gallery)
-        print(self.q_dataset.dataset[0])
+        # print(len(self.q_dataset.dataset), num_query,
+        #       len(self.g_dataset.dataset), num_gallery)
+        # print(self.q_dataset.dataset[0])
         # print(self.q_dataset[0][0].shape, self.q_dataset[0][1:])
         # print(self.g_dataset[0][0].shape, self.g_dataset[0][1:])
 

@@ -224,7 +224,8 @@ def main():
 
     visualizer = Visualizer(e.vid_g_pids, e.vid_g_camids,
                             e.vid_q_pids, e.vid_q_camids,
-                            gallery_loader.dataset, query_loader.dataset)
+                            gallery_loader.dataset.dataset,
+                            query_loader.dataset.dataset)
     visualizer.run(e.v2v_distmat)
 
 
