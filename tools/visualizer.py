@@ -184,7 +184,7 @@ class Visualizer:
         for i, image in enumerate(images):
             image_path = os.path.join(images_dir,
                                       "q-{}_c{}-{}.jpg".format(p_id, cam_id, i))
-            cv.imwrite(image_path, image)
+            cv.imwrite(image_path, np.array(image))
 
     @staticmethod
     def save_gallery_images(images_dir, image_tuples, distances):
@@ -193,7 +193,7 @@ class Visualizer:
                                       "g-{}_c{}-{:.2f}.jpg".format(p_id, cam_id,
                                                                    distances[
                                                                        i]))
-            cv.imwrite(image_path, images[0])
+            cv.imwrite(image_path, np.array(images[0]))
 
     def run(self, dist_mat):
         num_query, num_gallery = dist_mat.shape
