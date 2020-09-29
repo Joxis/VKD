@@ -195,7 +195,7 @@ class Visualizer:
                                                                    ))
             cv.imwrite(image_path, images[0].numpy().transpose((2, 1, 0)) * 255)
 
-    def run(self, dist_mat):
+    def run(self, dist_mat, num=100):
         num_query, num_gallery = dist_mat.shape
 
         print(len(self.q_dataset), num_query,
@@ -205,7 +205,7 @@ class Visualizer:
         # print(self.q_pids[0], self.q_camids[0])
         # print(self.g_pids[0], self.g_camids[0])
 
-        for i in range(num_query):
+        for i in range(num_query[:num]):
             # Get the k closest identities
             distances = np.array([dist_mat[i, j] for j in range(num_gallery)])
             idx = np.argpartition(distances, self.k)[:self.k]
