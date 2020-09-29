@@ -187,8 +187,8 @@ class Visualizer:
     def run(self, dist_mat):
         num_query, num_gallery = dist_mat.shape
 
-        print(self.q_dataset.shape, num_query,
-              self.g_dataset.shape, num_gallery)
+        print(len(self.q_dataset), num_query,
+              len(self.g_dataset), num_gallery)
 
         for i in range(num_query):
             # Get the k closest identities
