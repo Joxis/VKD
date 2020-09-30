@@ -83,7 +83,8 @@ class Visualizer:
         for g_image_tuple in g_image_tuples:
             gimg_paths, gpid, gcamid = g_image_tuple
             gimg_path = gimg_paths[0]
-            invalid = (qpid == gpid) & (qcamid == gcamid)
+            # invalid = (qpid == gpid) & (qcamid == gcamid)
+            invalid = False
 
             if not invalid:
                 matched = gpid == qpid
