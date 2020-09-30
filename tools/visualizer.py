@@ -102,6 +102,7 @@ class Visualizer:
                        ) * width + rank_idx * GRID_SPACING + Q_SPACING
                 cv.imwrite('test.jpg', gimg)
                 grid_img[:, start:end, :] = gimg
+                cv.imwrite('test2.jpg', grid_img[:, start:end, :])
                 print(rank_idx, gimg_path)
                 print(start, end)
 
