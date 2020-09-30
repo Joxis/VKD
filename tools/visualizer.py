@@ -101,6 +101,7 @@ class Visualizer:
                 end = (rank_idx + 1
                        ) * width + rank_idx * GRID_SPACING + Q_SPACING
                 grid_img[:, start:end, :] = gimg
+                print(gimg_path)
 
                 rank_idx += 1
                 if rank_idx > self.k:
