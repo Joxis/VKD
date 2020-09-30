@@ -80,6 +80,7 @@ class Visualizer:
         grid_img[:, :width, :] = qimg
 
         rank_idx = 1
+        print(len(g_image_tuples))
         for g_image_tuple in g_image_tuples:
             gimg_paths, gpid, gcamid = g_image_tuple
             gimg_path = gimg_paths[0]
