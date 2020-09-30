@@ -108,8 +108,9 @@ class Visualizer:
             rank_idx += 1
 
             if no_matches:
-                abs_save_dir = os.path.abspath(save_dir)
-                os.rename(abs_save_dir, "{}-{}".format(abs_save_dir, 'f'))
+                # abs_save_dir = os.path.abspath(save_dir)
+                # os.rename(abs_save_dir, "{}-{}".format(abs_save_dir, 'f'))
+                print(save_dir)
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
 
