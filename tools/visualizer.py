@@ -44,14 +44,14 @@ class Visualizer:
             image = Visualizer.read_image(image_path)
             out_image_path = os.path.join(
                 images_dir, "_q-{}-{}_c{}.jpg".format(str(i).zfill(2), p_id,
-                                                     str(cam_id).zfill(2)))
+                                                      str(cam_id).zfill(2)))
             Visualizer.save_image(image, out_image_path)
 
     @staticmethod
     def save_gallery_images(images_dir, image_tuples, distances):
         for i, (image_paths, p_id, cam_id) in enumerate(image_tuples):
             out_image_path = os.path.join(
-                images_dir, "g-{:.2f}-{}_c{}.jpg".format(distances[i], p_id,
+                images_dir, "g-{:.3f}-{}_c{}.jpg".format(distances[i], p_id,
                                                          str(cam_id).zfill(2)))
 
             image = Visualizer.read_image(image_paths[0])
@@ -100,6 +100,7 @@ class Visualizer:
                 start = rank_idx * width + rank_idx * GRID_SPACING + Q_SPACING
                 end = (rank_idx + 1
                        ) * width + rank_idx * GRID_SPACING + Q_SPACING
+                cv.imwrite('test.jpg', gimg)
                 grid_img[:, start:end, :] = gimg
                 print(rank_idx, gimg_path)
                 print(start, end)
