@@ -21,10 +21,11 @@ class Evaluator:
     def __init__(self, model: torch.nn.Module, query_loader: DataLoader,
                  gallery_loader: DataLoader, queryimg_loader: DataLoader,
                  galleryimg_loader: DataLoader, data_conf: DataConf,
-                 device: torch.device):
+                 device: torch.device, perform_i2x=False):
 
         self.perform_x2i = data_conf.perform_x2i
         self.perform_x2v = data_conf.perform_x2v
+        self.perform_i2x = perform_i2x
         model.eval()
 
         self.gallery_loader = gallery_loader
@@ -36,9 +37,10 @@ class Evaluator:
         print("Extracting query video features...")
         vid_qf, self.vid_q_pids, self.vid_q_camids = self.extract_features(model, query_loader,
                                                                            device)
-        print("Extracting query image features...")
-        img_qf, self.img_q_pids, self.img_q_camids = self.extract_features(model, queryimg_loader,
-                                                                           device)
+        if self.perform_i2x:
+            print("Extracting query image features...")
+            img_qf, self.img_q_pids, self.img_q_camids = self.extract_features(model, queryimg_loader,
+                                                                               device)
 
         # ----------- GALLERY
         print("Extracting gallery features...")
@@ -64,10 +66,12 @@ class Evaluator:
 
         if self.perform_x2v:
             self.v2v_distmat = self.compute_distance_matrix(vid_qf, vid_gf, metric='cosine').numpy()
-            self.i2v_distmat = self.compute_distance_matrix(img_qf, vid_gf, metric='cosine').numpy()
+            if self.perform_i2x:
+                self.i2v_distmat = self.compute_distance_matrix(img_qf, vid_gf, metric='cosine').numpy()
         if self.perform_x2i:
             self.v2i_distmat = self.compute_distance_matrix(vid_qf, img_gf, metric='cosine').numpy()
-            self.i2i_distmat = self.compute_distance_matrix(img_qf, img_gf, metric='cosine').numpy()
+            if self.perform_i2x:
+                self.i2i_distmat = self.compute_distance_matrix(img_qf, img_gf, metric='cosine').numpy()
 
     @staticmethod
     def compute_distance_matrix(x: torch.Tensor, y: torch.Tensor, metric='cosine'):
@@ -154,10 +158,11 @@ class Evaluator:
     def eval(self, saver: Saver, iteration: int, verbose: bool, do_tb: bool = True):
 
         if self.perform_x2v:
-            cmc_scores_i2v, mAP_i2v = self.evaluate_i2v(verbose=verbose)
-            if do_tb:
-                saver.dump_metric_tb(mAP_i2v, iteration, 'i2v', f'mAP')
-                self.tb_cmc(saver, cmc_scores_i2v, iteration, 'i2v')
+            if self.perform_i2x:
+                cmc_scores_i2v, mAP_i2v = self.evaluate_i2v(verbose=verbose)
+                if do_tb:
+                    saver.dump_metric_tb(mAP_i2v, iteration, 'i2v', f'mAP')
+                    self.tb_cmc(saver, cmc_scores_i2v, iteration, 'i2v')
 
             cmc_scores_v2v, mAP_v2v = self.evaluate_v2v(verbose=verbose)
             if do_tb:
@@ -165,10 +170,11 @@ class Evaluator:
                 self.tb_cmc(saver, cmc_scores_v2v, iteration, 'v2v')
 
         if self.perform_x2i:
-            cmc_scores_i2i, mAP_i2i = self.evaluate_i2i(verbose=verbose)
-            if do_tb:
-                saver.dump_metric_tb(mAP_i2i, iteration, 'i2i', f'mAP')
-                self.tb_cmc(saver, cmc_scores_i2i, iteration, 'i2i')
+            if self.perform_i2x:
+                cmc_scores_i2i, mAP_i2i = self.evaluate_i2i(verbose=verbose)
+                if do_tb:
+                    saver.dump_metric_tb(mAP_i2i, iteration, 'i2i', f'mAP')
+                    self.tb_cmc(saver, cmc_scores_i2i, iteration, 'i2i')
 
             cmc_scores_v2i, mAP_v2i = self.evaluate_v2i(verbose=verbose)
             if do_tb:
