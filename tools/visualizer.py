@@ -80,11 +80,11 @@ class Visualizer:
         grid_img[:, :width, :] = qimg
 
         rank_idx = 1
+        no_matches = True
         for g_image_tuple in g_image_tuples:
             gimg_paths, gpid, gcamid = g_image_tuple
             gimg_path = gimg_paths[0]
             invalid = (qpid == gpid) & (qcamid == gcamid)
-            no_matches = True
 
             # if not invalid:
             matched = gpid == qpid
@@ -108,8 +108,8 @@ class Visualizer:
             rank_idx += 1
 
             if no_matches:
-                print(save_dir)
-                # os.rename(save_dir, "{}-{}".format())
+                affix = 'f' if no_matches else 's'
+                os.rename(save_dir, "{}-{}".format(save_dir, affix))
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
 
