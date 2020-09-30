@@ -240,7 +240,7 @@ def main():
 
     visualizer = Visualizer(gallery_loader.dataset.dataset,
                             query_loader.dataset.dataset)
-    visualizer.run(e.v2v_distmat)
+    visualizer.run(e.i2v_distmat)
 
 
 if __name__ == '__main__':
