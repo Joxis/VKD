@@ -25,7 +25,8 @@ def mkdir_if_missing(dirname):
 
 
 def visualize_ranked_results(
-        distmat, dataset, data_type, width=128, height=256, save_dir='', topk=10
+        distmat, g_dataset, q_dataset, data_type, width=128, height=256,
+        save_dir='', topk=10
 ):
     """Visualizes ranked results.
     Supports both image-reid and video-reid.
@@ -49,7 +50,7 @@ def visualize_ranked_results(
     print('# query: {}\n# gallery {}'.format(num_q, num_g))
     print('Visualizing top-{} ranks ...'.format(topk))
 
-    query, gallery = dataset
+    query, gallery = q_dataset, g_dataset
     assert num_q == len(query)
     assert num_g == len(gallery)
 
@@ -165,12 +166,8 @@ def visualize_ranked_results(
 
 class Visualizer:
 
-    def __init__(self, g_pids, g_camids, q_pids, q_camids, g_dataset, q_dataset,
+    def __init__(self, g_dataset, q_dataset,
                  out_dir='output/', k=10):
-        # self.g_pids = g_pids
-        # self.g_camids = g_camids
-        # self.q_pids = q_pids
-        # self.q_camids = q_camids
         self.g_dataset = g_dataset
         self.q_dataset = q_dataset
         self.out_dir = out_dir
@@ -184,17 +181,16 @@ class Visualizer:
         # image = image.numpy().transpose((1, 2, 0)) * 255
         # image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
         cv.imwrite(image_path, image)
-        # save_image(image, image_path)
 
     @staticmethod
-    def get_image(image_path):
+    def read_image(image_path):
         return cv.imread(image_path)
 
     @staticmethod
     def save_query_images(images_dir, image_tuple):
         images, p_id, cam_id = image_tuple
         for i, image_path in enumerate(images):
-            image = Visualizer.get_image(image_path)
+            image = Visualizer.read_image(image_path)
             out_image_path = os.path.join(
                 images_dir, "q-{}-{}_c{}.jpg".format(str(i).zfill(2), p_id,
                                                      str(cam_id).zfill(2)))
@@ -207,17 +203,11 @@ class Visualizer:
                 images_dir, "g-{:.2f}-{}_c{}.jpg".format(distances[i], p_id,
                                                          str(cam_id).zfill(2)))
 
-            image = Visualizer.get_image(image_paths[0])
+            image = Visualizer.read_image(image_paths[0])
             Visualizer.save_image(image, out_image_path)
 
     def run(self, dist_mat, num=100):
         num_query, num_gallery = dist_mat.shape
-
-        # print(len(self.q_dataset.dataset), num_query,
-        #       len(self.g_dataset.dataset), num_gallery)
-        # print(self.q_dataset.dataset[0])
-        # print(self.q_dataset[0][0].shape, self.q_dataset[0][1:])
-        # print(self.g_dataset[0][0].shape, self.g_dataset[0][1:])
 
         print("Saving images...")
         for i in tqdm(range(min(num_query, num))):
@@ -240,6 +230,9 @@ class Visualizer:
                 result_distances.append(distances[min_idx])
                 result_image_tuples.append(self.g_dataset[min_idx])
 
+            # Save images
             self.save_query_images(out_pid_dir, self.q_dataset[i])
             self.save_gallery_images(out_pid_dir, result_image_tuples,
                                      result_distances)
+            visualize_ranked_results(dist_mat, self.g_dataset, self.q_dataset,
+                                     data_type="image", save_dir=out_pid_dir)
