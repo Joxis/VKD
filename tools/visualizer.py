@@ -108,11 +108,16 @@ class Visualizer:
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
 
-    def run(self, dist_mat, num=100):
+    def run(self, dist_mat, num=None):
         num_query, num_gallery = dist_mat.shape
 
         print("Saving images...")
-        for i in tqdm(range(min(num_query, num))):
+        if num is not None:
+            _num = min(num_query, num)
+        else:
+            _num = num_query
+
+        for i in tqdm(range(_num)):
             # Get the k closest identities
             distances = np.array([dist_mat[i, j] for j in range(num_gallery)])
             idx = np.argpartition(distances, self.k)[:self.k]
