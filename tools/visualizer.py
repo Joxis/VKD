@@ -83,28 +83,33 @@ class Visualizer:
         for g_image_tuple in g_image_tuples:
             gimg_paths, gpid, gcamid = g_image_tuple
             gimg_path = gimg_paths[0]
-            # invalid = (qpid == gpid) & (qcamid == gcamid)
-            invalid = False
+            invalid = (qpid == gpid) & (qcamid == gcamid)
+            no_matches = True
 
-            if not invalid:
-                matched = gpid == qpid
-                border_color = GREEN if matched else RED
-                gimg = cv.imread(gimg_path)
-                gimg = cv.resize(gimg, (width, height))
-                gimg = cv.copyMakeBorder(
-                    gimg, BW, BW, BW, BW, cv.BORDER_CONSTANT,
-                    value=border_color
-                )
-                gimg = cv.resize(gimg, (width, height))
-                start = rank_idx * width + rank_idx * GRID_SPACING + Q_SPACING
-                end = (rank_idx + 1
-                       ) * width + rank_idx * GRID_SPACING + Q_SPACING
-                grid_img[:, start:end, :] = gimg
-                # TODO: temp
-                cv.imwrite('test.jpg', grid_img)
+            # if not invalid:
+            matched = gpid == qpid
+            if matched and not invalid:
+                no_matches = False
+            border_color = GREEN if matched else RED
+            gimg = cv.imread(gimg_path)
+            gimg = cv.resize(gimg, (width, height))
+            gimg = cv.copyMakeBorder(
+                gimg, BW, BW, BW, BW, cv.BORDER_CONSTANT,
+                value=border_color
+            )
+            gimg = cv.resize(gimg, (width, height))
+            start = rank_idx * width + rank_idx * GRID_SPACING + Q_SPACING
+            end = (rank_idx + 1
+                   ) * width + rank_idx * GRID_SPACING + Q_SPACING
+            grid_img[:, start:end, :] = gimg
+            # TODO: temp
+            cv.imwrite('test.jpg', grid_img)
 
-                rank_idx += 1
+            rank_idx += 1
 
+            if no_matches:
+                print(save_dir)
+                # os.rename(save_dir, "{}-{}".format())
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
 
