@@ -77,7 +77,6 @@ class Visualizer:
             (height, num_cols * width + self.k * GRID_SPACING + Q_SPACING, 3),
             dtype=np.uint8
         )
-        print("---", grid_img.shape)
         grid_img[:, :width, :] = qimg
 
         rank_idx = 1
