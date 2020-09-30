@@ -103,6 +103,7 @@ class Visualizer:
                 cv.imwrite('test.jpg', gimg)
                 grid_img[:, start:end, :] = gimg
                 cv.imwrite('test2.jpg', grid_img[:, start:end, :])
+                cv.imwrite('test2.jpg', grid_img)
                 print(rank_idx, gimg_path)
                 print(start, end)
 
