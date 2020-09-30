@@ -21,11 +21,15 @@ class Evaluator:
     def __init__(self, model: torch.nn.Module, query_loader: DataLoader,
                  gallery_loader: DataLoader, queryimg_loader: DataLoader,
                  galleryimg_loader: DataLoader, data_conf: DataConf,
-                 device: torch.device, perform_i2x=False):
+                 device: torch.device, perform_i2x=False, perform_v2x=True):
 
         self.perform_x2i = data_conf.perform_x2i
         self.perform_x2v = data_conf.perform_x2v
         self.perform_i2x = perform_i2x
+        self.perform_v2x = perform_v2x
+        if not (self.perform_i2x or self.perform_v2x):
+            raise AttributeError("Either perform_i2x or perform_v2x must be true!")
+
         model.eval()
 
         self.gallery_loader = gallery_loader
@@ -34,9 +38,10 @@ class Evaluator:
         self.galleryimg_loader = galleryimg_loader
 
         # ----------- QUERY
-        print("Extracting query video features...")
-        vid_qf, self.vid_q_pids, self.vid_q_camids = self.extract_features(model, query_loader,
-                                                                           device)
+        if self.perform_v2x:
+            print("Extracting query video features...")
+            vid_qf, self.vid_q_pids, self.vid_q_camids = self.extract_features(model, query_loader,
+                                                                               device)
         if self.perform_i2x:
             print("Extracting query image features...")
             img_qf, self.img_q_pids, self.img_q_camids = self.extract_features(model, queryimg_loader,
@@ -65,11 +70,13 @@ class Evaluator:
                 self.img_g_camids = np.append(self.img_q_camids, self.img_g_camids)
 
         if self.perform_x2v:
-            self.v2v_distmat = self.compute_distance_matrix(vid_qf, vid_gf, metric='cosine').numpy()
+            if self.perform_v2x:
+                self.v2v_distmat = self.compute_distance_matrix(vid_qf, vid_gf, metric='cosine').numpy()
             if self.perform_i2x:
                 self.i2v_distmat = self.compute_distance_matrix(img_qf, vid_gf, metric='cosine').numpy()
         if self.perform_x2i:
-            self.v2i_distmat = self.compute_distance_matrix(vid_qf, img_gf, metric='cosine').numpy()
+            if self.perform_v2x:
+                self.v2i_distmat = self.compute_distance_matrix(vid_qf, img_gf, metric='cosine').numpy()
             if self.perform_i2x:
                 self.i2i_distmat = self.compute_distance_matrix(img_qf, img_gf, metric='cosine').numpy()
 
@@ -164,10 +171,11 @@ class Evaluator:
                     saver.dump_metric_tb(mAP_i2v, iteration, 'i2v', f'mAP')
                     self.tb_cmc(saver, cmc_scores_i2v, iteration, 'i2v')
 
-            cmc_scores_v2v, mAP_v2v = self.evaluate_v2v(verbose=verbose)
-            if do_tb:
-                saver.dump_metric_tb(mAP_v2v, iteration, 'v2v', f'mAP')
-                self.tb_cmc(saver, cmc_scores_v2v, iteration, 'v2v')
+            if self.perform_v2x:
+                cmc_scores_v2v, mAP_v2v = self.evaluate_v2v(verbose=verbose)
+                if do_tb:
+                    saver.dump_metric_tb(mAP_v2v, iteration, 'v2v', f'mAP')
+                    self.tb_cmc(saver, cmc_scores_v2v, iteration, 'v2v')
 
         if self.perform_x2i:
             if self.perform_i2x:
@@ -176,10 +184,11 @@ class Evaluator:
                     saver.dump_metric_tb(mAP_i2i, iteration, 'i2i', f'mAP')
                     self.tb_cmc(saver, cmc_scores_i2i, iteration, 'i2i')
 
-            cmc_scores_v2i, mAP_v2i = self.evaluate_v2i(verbose=verbose)
-            if do_tb:
-                saver.dump_metric_tb(mAP_v2i, iteration, 'v2i', f'mAP')
-                self.tb_cmc(saver, cmc_scores_v2i, iteration, 'v2i')
+            if self.perform_v2x:
+                cmc_scores_v2i, mAP_v2i = self.evaluate_v2i(verbose=verbose)
+                if do_tb:
+                    saver.dump_metric_tb(mAP_v2i, iteration, 'v2i', f'mAP')
+                    self.tb_cmc(saver, cmc_scores_v2i, iteration, 'v2i')
 
 
 def parse(conf: Conf):
@@ -224,7 +233,8 @@ def main():
     net.load_state_dict(state_dict)
 
     e = Evaluator(net, query_loader, gallery_loader, queryimg_loader, galleryimg_loader,
-                  device=device, data_conf=DATA_CONFS[args.dataset_name])
+                  device=device, data_conf=DATA_CONFS[args.dataset_name],
+                  perform_i2x=True, perform_v2x=False)
 
     e.eval(None, 0, verbose=True, do_tb=False)
 
