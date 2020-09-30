@@ -108,8 +108,8 @@ class Visualizer:
             rank_idx += 1
 
             if no_matches:
-                affix = 'f' if no_matches else 's'
-                os.rename(save_dir, "{}-{}".format(save_dir, affix))
+                abs_save_dir = os.path.abspath(save_dir)
+                os.rename(abs_save_dir, "{}-{}".format(abs_save_dir, 'f'))
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
 
