@@ -59,7 +59,6 @@ class Visualizer:
 
     def visualize_ranked_results(self, q_image_tuple, g_image_tuples, width=128,
                                  height=256, save_dir=''):
-        print('Visualizing top-{} ranks ...'.format(self.k))
         if not osp.exists(save_dir):
             os.makedirs(save_dir)
 
@@ -107,8 +106,6 @@ class Visualizer:
 
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
-
-        print('Done. Images have been saved to "{}" ...'.format(save_dir))
 
     def run(self, dist_mat, num=100):
         num_query, num_gallery = dist_mat.shape
