@@ -100,12 +100,9 @@ class Visualizer:
                 start = rank_idx * width + rank_idx * GRID_SPACING + Q_SPACING
                 end = (rank_idx + 1
                        ) * width + rank_idx * GRID_SPACING + Q_SPACING
-                cv.imwrite('test.jpg', gimg)
                 grid_img[:, start:end, :] = gimg
-                cv.imwrite('test2.jpg', grid_img[:, start:end, :])
-                cv.imwrite('test3.jpg', grid_img)
-                print(rank_idx, gimg_path)
-                print(start, end)
+                # TODO: temp
+                cv.imwrite('test.jpg', grid_img)
 
                 rank_idx += 1
                 if rank_idx > self.k:
