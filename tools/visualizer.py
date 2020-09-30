@@ -79,8 +79,7 @@ class Visualizer:
         )
         grid_img[:, :width, :] = qimg
 
-        rank_idx = 1
-        print(len(g_image_tuples))
+        rank_idx = 0
         for g_image_tuple in g_image_tuples:
             gimg_paths, gpid, gcamid = g_image_tuple
             gimg_path = gimg_paths[0]
@@ -101,7 +100,7 @@ class Visualizer:
                 end = (rank_idx + 1
                        ) * width + rank_idx * GRID_SPACING + Q_SPACING
                 grid_img[:, start:end, :] = gimg
-                print(gimg_path)
+                print(rank_idx, gimg_path)
 
                 rank_idx += 1
                 if rank_idx > self.k:
