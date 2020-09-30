@@ -104,8 +104,6 @@ class Visualizer:
                 cv.imwrite('test.jpg', grid_img)
 
                 rank_idx += 1
-                if rank_idx > self.k:
-                    break
 
             imname = osp.basename(osp.splitext(qimg_path)[0])
             cv.imwrite(osp.join(save_dir, imname + '.jpg'), grid_img)
