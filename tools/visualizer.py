@@ -43,7 +43,7 @@ class Visualizer:
         for i, image_path in enumerate(images):
             image = Visualizer.read_image(image_path)
             out_image_path = os.path.join(
-                images_dir, "q-{}-{}_c{}.jpg".format(str(i).zfill(2), p_id,
+                images_dir, "_q-{}-{}_c{}.jpg".format(str(i).zfill(2), p_id,
                                                      str(cam_id).zfill(2)))
             Visualizer.save_image(image, out_image_path)
 
