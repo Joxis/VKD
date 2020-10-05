@@ -1,6 +1,6 @@
 import argparse
 from pathlib import Path
-from typing import Tuple
+import time
 
 import numpy as np
 import torch
@@ -82,11 +82,19 @@ class Evaluator:
 
     @staticmethod
     def compute_distance_matrix(x: torch.Tensor, y: torch.Tensor, metric='cosine'):
+        start = time.time()
         if metric == 'cosine':
             x = x / torch.norm(x, dim=-1, keepdim=True)
             y = y / torch.norm(y, dim=-1, keepdim=True)
 
-        return 1 - torch.mm(x, y.T)
+        dist_mat = 1 - torch.mm(x, y.T)
+
+        print("Computed {} distance matrix in {}s.".format(
+            dist_mat.shape,
+            time.time() - start
+        ))
+
+        return dist_mat
 
     def evaluate_v2v(self, verbose: bool = True):
         cmc, mAP, wrong_matches = evaluate(self.v2v_distmat, self.vid_q_pids,
@@ -139,6 +147,7 @@ class Evaluator:
         """
         Extract features for the entire dataloader. It returns also pids and cams.
         """
+        start = time.time()
         features, pids, cams = [], [], []
 
         for vids, pidids, camids in tqdm(loader):
@@ -154,6 +163,12 @@ class Evaluator:
         features = torch.cat(features, 0).to('cpu')
         pids = np.asarray(pids)
         cams = np.asarray(cams)
+
+        print("Extracted features for {} images in {}s.".format(
+            features.shape,
+            time.time() - start
+        ))
+
         return features, pids, cams
 
     @staticmethod
